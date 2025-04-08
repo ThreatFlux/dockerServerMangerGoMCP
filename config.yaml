@@ -1,0 +1,75 @@
+# Default configuration for Docker Server Manager
+
+server:
+  host: "0.0.0.0"
+  port: 8080
+  read_timeout: 30s
+  write_timeout: 30s
+  shutdown_timeout: 10s
+  mode: "release" # Use "debug" for development
+  tls:
+    enabled: false
+    # cert_file: path/to/cert.pem
+    # key_file: path/to/key.pem
+
+database:
+  type: "postgres" # Changed to postgres
+  # sqlite: # Commented out sqlite config
+  #   path: "docker_test-server-manager.db"
+  # Postgres settings (if type is postgres)
+  host: localhost # Use localhost as compose maps the port
+  port: 5432
+  user: dsm_user # Match docker_test-compose.dev.yml
+  password: "dsm_password" # Match docker_test-compose.dev.yml - Use env var DSM_DATABASE_PASSWORD for better security
+  name: dsm_dev_db # Match docker_test-compose.dev.yml
+  ssl_mode: "disable" # Usually disable for local dev
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: 5m
+
+auth:
+  # IMPORTANT: Generate a strong, random secret for production!
+  # Use 'openssl rand -base64 32' to generate one.
+  secret: "df4HB+fxbYbGn1sVCtsKFAKLYnfahIb2Tw2jbgKmQ3M=" # Replaced placeholder
+  access_token_ttl: 15m
+  refresh_token_ttl: 168h # 7 days
+  token_issuer: "docker_test-server-manager"
+  token_audience: "dsm-api"
+  blacklist_enabled: true
+  algorithm: "HS256"
+  password_policy:
+    min_length: 10
+    require_upper: true
+    require_lower: true
+    require_number: true
+    require_special: true
+    max_age: 90 # days
+
+docker_test:
+  # host: "unix:///var/run/docker.sock" # Updated for Docker Desktop on macOS
+  # api_version: "1.41" # Optional, defaults to negotiation
+  tls_verify: false
+  # tls_cert_path: path/to/cert.pem
+  # tls_key_path: path/to/key.pem
+  # tls_ca_path: path/to/ca.pem
+  # registry_auth: # Optional default registry credentials
+    # username: ""
+    # password: "" # Use environment variable DSM_DOCKER_REGISTRYAUTH_PASSWORD
+    # server: "" # e.g., docker_test.io
+
+logging:
+  level: "debug" # Changed to debug
+  format: "text" # or "json"
+  # file: /var/log/dsm.log # Optional log file path
+  mask_secrets: true
+
+security:
+  encryption_enabled: false # Set to true and provide encryption_key for sensitive config encryption
+  # encryption_key: "" # Use environment variable DSM_SECURITY_ENCRYPTIONKEY
+  secure_cookies: true
+  strict_transport_security: true
+  content_security_policy: "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'"
+  rate_limiting:
+    enabled: true
+    max_per_ip: 100
+    window_secs: 60

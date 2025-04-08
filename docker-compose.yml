@@ -1,0 +1,93 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: docker_test-server-manager-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - CONFIG_FILE=/app/configs/config.yaml
+      - DB_DRIVER=postgres
+      - DB_DSN=postgresql://postgres:postgres@db:5432/docker_manager?sslmode=disable
+      - LOG_LEVEL=info
+      - LOG_FORMAT=json
+      - DOCKER_HOST=unix:///var/run/docker_test.sock
+      - JWT_SECRET=${JWT_SECRET:-change_this_in_production}
+      - TOKEN_EXPIRY=60m
+      - REFRESH_EXPIRY=24h
+    volumes:
+      - ./configs:/app/configs
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - /var/run/docker_test.sock:/var/run/docker_test.sock
+    depends_on:
+      - db
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  db:
+    image: postgres:14-alpine
+    container_name: docker_test-server-manager-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=docker_manager
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # Development tools
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: docker_test-server-manager-pgadmin
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # Development service for frontend (if needed)
+  frontend:
+    image: node:18-alpine
+    container_name: docker_test-server-manager-frontend
+    working_dir: /app
+    command: sh -c "echo 'Frontend container ready for development' && tail -f /dev/null"
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+volumes:
+  postgres-data:
+  pgadmin-data:
+
+networks:
+  app-network:
+    driver: bridge
