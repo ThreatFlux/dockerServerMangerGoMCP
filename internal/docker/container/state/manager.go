@@ -14,7 +14,6 @@ import (
 	"github.com/docker/docker/api/types/filters" // Add filters import
 	"github.com/docker/docker/client"
 	"github.com/sirupsen/logrus"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Remove unused import
 )
 
 // ContainerState represents the possible states of a container

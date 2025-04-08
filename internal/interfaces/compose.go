@@ -5,7 +5,6 @@ import (
 	"context"
 	"io" // Needed for Parse method
 
-	// No longer importing implementation packages directly
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
 )
 
@@ -14,8 +13,6 @@ type ComposeService interface {
 	// Parse reads and parses a Docker Compose configuration from an io.Reader
 	Parse(ctx context.Context, reader io.Reader, options models.ParseOptions) (*models.ComposeFile, error) // Use models.ParseOptions
 
-	// ParseFile method removed
-	// ValidateFile method removed
 }
 
 // ComposeOrchestrator defines interfaces for Docker Compose orchestration

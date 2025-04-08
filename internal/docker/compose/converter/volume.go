@@ -8,7 +8,6 @@ import (
 	composetypes "github.com/compose-spec/compose-go/v2/types" // Added compose types import
 	"github.com/docker/docker/api/types/volume"
 	"github.com/sirupsen/logrus"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker_test/compose" // Removed old import
 )
 
 // VolumeConverter is responsible for converting Docker Compose volume definitions to Docker API structures

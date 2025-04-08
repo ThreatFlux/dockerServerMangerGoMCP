@@ -9,8 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/distribution/reference" // Use the non-deprecated path
-	// "github.com/docker_test/docker_test/api/types" // May become unused
+	"github.com/distribution/reference"                         // Use the non-deprecated path
 	imagetypes "github.com/docker/docker/api/types/image"       // Added for PullOptions
 	registrytypes "github.com/docker/docker/api/types/registry" // Added for AuthConfig
 	"github.com/docker/docker/client"
@@ -18,7 +17,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker/image"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker/registry"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/utils" // Removed unused import
 )
 
 // PullManager manages image pull operations

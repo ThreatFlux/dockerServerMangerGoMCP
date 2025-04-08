@@ -1,7 +1,6 @@
 package status
 
 import (
-	// "context" // Removed unused import
 	"errors"
 	"testing"
 	"time"
@@ -9,8 +8,6 @@ import (
 	"github.com/docker/docker/api/types/events"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	// "github.com/stretchr/testify/mock" // Removed unused import
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker_test/compose" // Ensure this is removed
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Keep models import
 )
 

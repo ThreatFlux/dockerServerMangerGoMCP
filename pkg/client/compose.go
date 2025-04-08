@@ -14,10 +14,6 @@ import (
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
 )
 
-// ComposeUpOptions is now defined in internal/models
-
-// ComposeDownOptions is now defined in internal/models
-
 // UploadComposeFile uploads a Compose file to the server
 func (c *APIClient) UploadComposeFile(ctx context.Context, content io.Reader, filename string) (string, error) {
 	if content == nil {

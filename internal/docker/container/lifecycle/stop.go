@@ -7,12 +7,9 @@ import (
 	"strings"
 	"time"
 
-	// "github.com/docker_test/docker_test/api/types" // Removed unused import
 	"github.com/docker/docker/api/types/container" // Added import
-	// "github.com/docker_test/docker_test/client" // Removed unused import
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Removed unused import
 )
 
 // StopOptions contains options for stopping a container

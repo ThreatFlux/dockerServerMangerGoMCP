@@ -3,28 +3,15 @@ package status
 import (
 	"context"
 	"errors"
-	// "io" // Import for ContainerExport - Unused
-	// "net" // Import for DialHijack - Unused
-	// "net/http" // Import for HTTPClient - Unused
 	"testing"
 	"time"
 
 	"github.com/docker/docker/api/types"
-	// "github.com/docker_test/docker_test/api/types/checkpoint" // Unused
 	"github.com/docker/docker/api/types/container" // Needed for MockDockerClient
 	"github.com/docker/docker/api/types/events"    // Needed for MockDockerClient
-	// "github.com/docker_test/docker_test/api/types/filters"    // Unused
-	// "github.com/docker_test/docker_test/api/types/image"      // Unused
-	// "github.com/docker_test/docker_test/api/types/network"    // Unused
-	// "github.com/docker_test/docker_test/api/types/registry"   // Unused
-	// "github.com/docker_test/docker_test/api/types/swarm"      // Unused
-	// "github.com/docker_test/docker_test/api/types/system"     // Unused
-	// "github.com/docker_test/docker_test/api/types/volume"     // Unused
-	// specs "github.com/opencontainers/image-spec/specs-go/v1" // Unused
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker_test/compose" // Removed old import
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Added import
 )
 

@@ -13,13 +13,10 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	// "github.com/stretchr/testify/mock" // Removed unused import
-	// Removed unused integration_helpers import for now
 	"github.com/stretchr/testify/require"
 
 	"github.com/docker/docker/api/types/container" // Re-add container import
-	// Removed unused client import
-	"github.com/docker/go-connections/nat" // Import nat for PortMap
+	"github.com/docker/go-connections/nat"         // Import nat for PortMap
 	"github.com/sirupsen/logrus"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/api"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/auth"
@@ -30,14 +27,6 @@ import (
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker/container/lifecycle"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
 )
-
-// Removed local containerTestMockManager and its methods.
-// Tests will need refactoring to use standard mock setup with integration_helpers.MockDockerManager.
-
-// Removed duplicate integration_helpers.MockDockerManager definition
-
-// AddMockContainer adds or updates a mock container
-// Removed duplicate method definitions below that were conflicting
 
 // testServer encapsulates a test server and its dependencies
 type testServer struct {

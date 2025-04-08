@@ -2,13 +2,11 @@ package models
 
 import (
 	"strconv"
-	// "strings" // Removed unused import
 	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container" // Keep container for State type
-	// "github.com/docker_test/docker_test/api/types/mount" // Remove unused mount import
-	"github.com/docker/docker/api/types/network" // Re-added import
+	"github.com/docker/docker/api/types/network"   // Re-added import
 	"github.com/docker/go-connections/nat"
 	specs "github.com/opencontainers/image-spec/specs-go/v1" // Re-added import
 )

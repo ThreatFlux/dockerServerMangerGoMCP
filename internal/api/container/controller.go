@@ -13,7 +13,6 @@ type Controller struct {
 	containerService container.Service
 	dockerManager    docker.Manager // Changed from dockerClient
 	logger           *logrus.Logger
-	// containerRepo    repositories.ContainerRepository // Removed repository dependency
 }
 
 // NewController creates a new container controller
@@ -21,13 +20,11 @@ func NewController(
 	containerService container.Service,
 	dockerManager docker.Manager, // Changed from dockerClient
 	logger *logrus.Logger,
-	// containerRepo repositories.ContainerRepository, // Removed repository dependency
 ) *Controller {
 	return &Controller{
 		containerService: containerService,
 		dockerManager:    dockerManager, // Changed from dockerClient
 		logger:           logger,
-		// containerRepo:    containerRepo, // Removed repository dependency
 	}
 }
 

@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 
-	// types "github.com/docker_test/docker_test/api/types" // Removed unused import
 	imagetypes "github.com/docker/docker/api/types/image"
 	registrytypes "github.com/docker/docker/api/types/registry" // AuthConfig is here
 	"github.com/docker/docker/client"

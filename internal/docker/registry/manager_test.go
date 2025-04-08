@@ -2,11 +2,10 @@ package registry
 
 import (
 	"context"
-	"errors" // Added standard errors package
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
-	// "time" // Removed unused import
 
 	registrytypes "github.com/docker/docker/api/types/registry"
 	"github.com/sirupsen/logrus"
@@ -14,7 +13,6 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	// Import utils package for ParseImageName
 	"github.com/distribution/reference" // Import for reference.Named
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/utils"
 )

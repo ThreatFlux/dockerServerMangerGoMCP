@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	// "github.com/docker_test/docker_test/api/types" // Removed unused import
 	composetypes "github.com/compose-spec/compose-go/v2/types" // Added compose types import
 	"github.com/docker/docker/api/types/network"
 	"github.com/sirupsen/logrus"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker_test/compose" // Removed old import
 )
 
 // NetworkConverter is responsible for converting Docker Compose network definitions to Docker API structures

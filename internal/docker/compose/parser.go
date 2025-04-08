@@ -57,7 +57,9 @@ func NewParser(logger *logrus.Logger) *Parser {
 }
 
 // Parse reads and parses a Docker Compose configuration from an io.Reader using compose-go
-func (p *Parser) Parse(ctx context.Context, reader io.Reader, options models.ParseOptions) (*models.ComposeFile, error) {
+func (p *Parser) Parse(ctx context.Context,
+	reader io.Reader,
+	options models.ParseOptions) (*models.ComposeFile, error) {
 	p.logger.Debug("Parsing Docker Compose configuration using compose-go library (direct content)")
 	// Read content directly
 	content, err := io.ReadAll(reader) // Use io.ReadAll
@@ -81,7 +83,8 @@ func (p *Parser) Parse(ctx context.Context, reader io.Reader, options models.Par
 	}
 	absWorkingDir, err := filepath.Abs(workingDir)
 	if err != nil {
-		p.logger.WithError(err).Warnf("Failed to get absolute path for working directory '%s', using it as is", workingDir)
+		p.logger.WithError(err).Warnf(
+			"Failed to get absolute path for working directory '%s', using it as is", workingDir)
 		absWorkingDir = workingDir // Use original if Abs fails
 	}
 	p.logger.Debugf("Using working directory for compose loader: %s", absWorkingDir) // Added log

@@ -5,11 +5,10 @@ import (
 	"fmt" // Added import
 	"testing"
 
+	compose "github.com/compose-spec/compose-go/v2/types" // Import compose-go types
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker_test/compose" // Removed unused import
-	compose "github.com/compose-spec/compose-go/v2/types" // Import compose-go types
 )
 
 func TestConvertVolume(t *testing.T) {

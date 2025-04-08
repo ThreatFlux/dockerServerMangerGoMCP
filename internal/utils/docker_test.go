@@ -2,19 +2,9 @@ package utils
 
 import (
 	"testing"
-	// "context" // Removed unused import
-	// "fmt" // Removed unused import
-	// "time" // Removed unused import
 
 	"github.com/docker/docker/api/types"
-	// "github.com/docker_test/docker_test/api/types/container" // Removed unused import
-	// "github.com/docker_test/docker_test/api/types/network" // Removed unused import
-	// "github.com/docker_test/docker_test/api/types/volume" // Removed unused import
-	// "github.com/docker_test/go-connections/nat" // Removed unused import
-	// Removed unused filters import
 	"github.com/stretchr/testify/assert"
-	// "github.com/stretchr/testify/require" // Removed unused import
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Removed unused import
 )
 
 func TestFormatContainerStatus(t *testing.T) {

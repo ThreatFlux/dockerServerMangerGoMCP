@@ -9,7 +9,6 @@ import (
 	"strings"
 	"testing"
 	"time"
-	// "errors" // Removed unused import
 
 	registrytypes "github.com/docker/docker/api/types/registry" // Added for AuthConfig
 	"github.com/stretchr/testify/assert"

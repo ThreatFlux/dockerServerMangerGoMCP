@@ -175,13 +175,6 @@ func TestImagePullRequest(t *testing.T) {
 	request := ImagePullRequest{
 		Image: "nginx",
 		Tag:   "latest",
-		Credentials: struct {
-			Username string `json:"username"`
-			Password string `json:"password"`
-		}{
-			Username: "testuser",
-			Password: "testpassword",
-		},
 	}
 
 	// Verify all fields are as expected

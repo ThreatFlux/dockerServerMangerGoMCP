@@ -5,12 +5,10 @@ import (
 	"net/http"
 	"testing"
 
+	dockertypesvolume "github.com/docker/docker/api/types/volume" // Import docker_test volume types
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker" // Remove unused import
 	"github.com/threatflux/dockerServerMangerGoMCP/test/integration" // Import integration helpers
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker_test/volume/manager" // Unused
-	dockertypesvolume "github.com/docker/docker/api/types/volume" // Import docker_test volume types
 )
 
 // TestVolumeOperations tests volume-related endpoints

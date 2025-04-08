@@ -20,9 +20,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"                                   // Added import
-	"github.com/threatflux/dockerServerMangerGoMCP/internal/auth"           // Keep for models.RoleUser and auth.TokenDetails
-	auth_test "github.com/threatflux/dockerServerMangerGoMCP/internal/auth" // Use main auth package for MockService
+	"github.com/stretchr/testify/require"                                  // Added import
+	"github.com/threatflux/dockerServerMangerGoMCP/internal/auth"          // Keep for models.RoleUser and auth.TokenDetails
+	authtest "github.com/threatflux/dockerServerMangerGoMCP/internal/auth" // Use main auth package for MockService
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/interfaces" // Import interfaces
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/middleware"
@@ -256,7 +256,7 @@ func setupComposeTestRouter(composeService interfaces.ComposeService, statusTrac
 	logger.SetLevel(logrus.FatalLevel) // Suppress logs during tests
 
 	// Create mocked auth service using function fields
-	authService := &auth_test.MockService{} // Use MockService from auth package
+	authService := &authtest.MockService{} // Use MockService from auth package
 	authService.VerifyFunc = func(ctx context.Context, tokenString string) (*auth.TokenDetails, error) {
 		// Basic validation for testing purposes
 		if tokenString == "Bearer valid-token" || tokenString == "valid-token" { // Allow with or without Bearer prefix

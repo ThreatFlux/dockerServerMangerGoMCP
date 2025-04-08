@@ -20,7 +20,6 @@ import (
 	"sync"
 	"time"
 
-	// "github.com/docker_test/docker_test/api/types" // Keep if other types are needed, otherwise remove
 	registrytypes "github.com/docker/docker/api/types/registry" // Uncommented and aliased
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/pbkdf2"

@@ -2,15 +2,12 @@ package utils
 
 import (
 	"context"
-	// "encoding/json" // Removed unused import
 	"fmt"
 	"io"
 	"net/url"
 	"os"
 	"regexp"
-	// "strconv" // Removed unused import
 	"strings" // Uncommented for ParseRepositoryTag
-	// "time" // Removed unused import
 
 	"github.com/distribution/reference" // Added for ParseImageName
 	"github.com/docker/docker/api/types"
@@ -20,7 +17,6 @@ import (
 	"github.com/docker/docker/api/types/network" // Add/Uncomment network import
 	"github.com/docker/docker/api/types/volume"
 	"github.com/docker/docker/client"
-	// "github.com/docker_test/go-connections/nat" // Removed unused import
 	"github.com/go-playground/validator/v10"
 	"github.com/sirupsen/logrus"
 )

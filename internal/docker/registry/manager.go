@@ -3,14 +3,11 @@ package registry
 
 import (
 	"context"
-	// "encoding/base64" // Removed unused import
-	// "encoding/json"  // Removed unused import
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 
-	// "github.com/docker_test/docker_test/api/types" // Removed unused import
 	imagetypes "github.com/docker/docker/api/types/image" // Import image types
 	registrytypes "github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/client"

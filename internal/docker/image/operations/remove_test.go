@@ -5,17 +5,13 @@ import (
 	"errors"
 	"testing"
 
-	// Removed unused types import
 	imagetypes "github.com/docker/docker/api/types/image" // Add alias
 	"github.com/docker/docker/client"
-	// Removed unused filters import
-	// Removed duplicate client import below
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	dockermocks "github.com/threatflux/dockerServerMangerGoMCP/internal/docker" // Import for mock
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker/image"       // Local image package
-	// Removed conflicting local image package import
 )
 
 // TestRemoveManager_Remove tests the Remove method

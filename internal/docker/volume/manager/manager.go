@@ -8,13 +8,10 @@ import (
 	"errors" // Added for errors.Is
 	"fmt"
 	"io"
-	// "path/filepath" // Removed unused import
 	"sort" // Added sort import
-	// "strings" // Removed unused import
 	"sync"
 	"time"
 
-	// "github.com/docker_test/docker_test/api/types" // Removed unused import
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/events" // Added events import
 	"github.com/docker/docker/api/types/filters"

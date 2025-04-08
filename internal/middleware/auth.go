@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	// "context" // Removed unused import
 	"errors"
 	"fmt"
 	"net/http"

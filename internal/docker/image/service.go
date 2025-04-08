@@ -4,10 +4,9 @@ import (
 	"context"
 	"io"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/image"                  // Import image directly
-	imagetypes "github.com/docker/docker/api/types/image"       // Keep alias for now if used elsewhere
-	registrytypes "github.com/docker/docker/api/types/registry" // Add registry import with alias
+	"github.com/docker/docker/api/types/image"
+	imagetypes "github.com/docker/docker/api/types/image"
+	registrytypes "github.com/docker/docker/api/types/registry"
 )
 
 // Service defines the interface for Docker image operations
@@ -16,12 +15,10 @@ type Service interface {
 	ImagePull(ctx context.Context, refStr string, options image.PullOptions) (io.ReadCloser, error)
 	ImageInspectWithRaw(ctx context.Context, imageID string) (image.InspectResponse, []byte, error)               // Use direct type
 	ImageRemove(ctx context.Context, imageID string, options image.RemoveOptions) ([]image.DeleteResponse, error) // Use direct type
-
-	// --- Methods previously defined in this interface (Keep for now, ensure implementation exists) ---
-	List(ctx context.Context, options ListOptions) ([]imagetypes.Summary, error) // Use imagetypes.Summary
+	List(ctx context.Context, options ListOptions) ([]imagetypes.Summary, error)                                  // Use imagetypes.Summary
 	Build(ctx context.Context, options BuildOptions) (io.ReadCloser, error)
 	Tag(ctx context.Context, imageID, ref string) error
-	Inspect(ctx context.Context, imageID string) (types.ImageInspect, error)                              // Use types.ImageInspect
+	Inspect(ctx context.Context, imageID string) (imagetypes.InspectResponse, error)                      // Use types.ImageInspect
 	History(ctx context.Context, imageID string) ([]imagetypes.HistoryResponseItem, error)                // Use imagetypes.HistoryResponseItem
 	Prune(ctx context.Context, options PruneOptions) (imagetypes.PruneReport, error)                      // Use imagetypes.PruneReport
 	Search(ctx context.Context, term string, options SearchOptions) ([]registrytypes.SearchResult, error) // Use registrytypes.SearchResult

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	// "github.com/docker_test/docker_test/api/types" // Removed unused import
 	"github.com/docker/docker/api/types/filters"          // Added for prune filters
 	imagetypes "github.com/docker/docker/api/types/image" // Added for image types
 	"github.com/docker/docker/client"

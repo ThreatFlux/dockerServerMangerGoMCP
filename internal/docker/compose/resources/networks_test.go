@@ -12,10 +12,6 @@ import (
 	"testing"
 )
 
-// --- Mocks ---
-// MockNetworkService removed - defined in manager_test.go
-// MockVolumeService removed - defined in manager_test.go
-
 // --- Tests ---
 
 func TestCreateComposeNetworks_Success(t *testing.T) {

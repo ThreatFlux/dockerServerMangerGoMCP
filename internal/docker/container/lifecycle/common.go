@@ -18,14 +18,12 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	imagetypes "github.com/docker/docker/api/types/image" // Use imagetypes alias
 	"github.com/docker/docker/api/types/network"
-	// "github.com/docker_test/docker_test/api/types/swarm" // Removed unused import
 	"github.com/docker/docker/client"
 	"github.com/sirupsen/logrus"
 
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker/security" // Added security import
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"          // Added models import
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/utils" // Removed unused import
 )
 
 // Common standardized errors for container operations.

@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	// Removed unused types import
 	"github.com/docker/docker/api/types/filters"
 	dockernetwork "github.com/docker/docker/api/types/network" // Alias import
 	"github.com/sirupsen/logrus"

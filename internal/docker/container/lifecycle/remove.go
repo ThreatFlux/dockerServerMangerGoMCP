@@ -14,7 +14,6 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Removed unused import
 )
 
 // RemoveOptions contains options for removing a container

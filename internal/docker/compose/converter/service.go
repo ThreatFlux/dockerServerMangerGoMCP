@@ -10,7 +10,6 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 	"github.com/sirupsen/logrus"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker_test/compose" // Removed old import
 )
 
 // ServiceConverter is responsible for converting Docker Compose service definitions to Docker API structures

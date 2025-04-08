@@ -5,22 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	// "io" // Removed unused import
-	// "net" // Removed unused import
+	networktypes "github.com/docker/docker/api/types/network" // Added networktypes import
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	// "time" // Removed unused import
-	// "bufio" // Removed unused import
 
-	// "github.com/docker_test/docker_test/api/types" // Removed unused import
-	// "github.com/docker_test/docker_test/api/types/container" // Removed unused import
-	// "github.com/docker_test/docker_test/api/types/events" // Removed unused import
-	// "github.com/docker_test/docker_test/api/types/filters" // Removed unused import
-	// "github.com/docker_test/docker_test/api/types/mount" // Removed unused import
-	networktypes "github.com/docker/docker/api/types/network" // Added networktypes import
-	// dockertypesvolume "github.com/docker_test/docker_test/api/types/volume" // Removed unused import
-	// client "github.com/docker_test/docker_test/client" // Removed unused import
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -31,7 +20,6 @@ import (
 	dockernetwork "github.com/threatflux/dockerServerMangerGoMCP/internal/docker/network" // Alias for network service package
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/middleware"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
-	// "gorm.io/gorm" // Removed unused import
 )
 
 // --- Mocks ---

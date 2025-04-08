@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/auth"
-	auth_test "github.com/threatflux/dockerServerMangerGoMCP/internal/auth" // Use main auth package for MockService
+	authtest "github.com/threatflux/dockerServerMangerGoMCP/internal/auth" // Use main auth package for MockService
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/middleware"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
 )
@@ -40,7 +40,7 @@ func setupCreateTestController(t *testing.T) (*Controller, *gin.Engine, *MockCon
 	mockDockerManager := new(MockManager) // Use mock defined in controller_test.go
 
 	// Mock auth service
-	authService := &auth_test.MockService{}
+	authService := &authtest.MockService{}
 	authService.VerifyFunc = func(ctx context.Context, tokenString string) (*auth.TokenDetails, error) {
 		if tokenString == "Bearer valid-token" || tokenString == "valid-token" {
 			return &auth.TokenDetails{UserID: 1, Roles: []string{string(models.RoleUser)}}, nil

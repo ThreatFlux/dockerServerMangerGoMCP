@@ -4,7 +4,6 @@ package interfaces
 import (
 	"context"
 	"io"
-	// "time" // Removed unused import
 
 	"github.com/docker/docker/api/types" // Added import for types.ContainerJSON
 	"github.com/docker/docker/api/types/container"
@@ -12,7 +11,6 @@ import (
 	"github.com/docker/docker/api/types/image"   // Added import
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/volume"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Removed unused import
 )
 
 // ContainerService defines methods for container operations

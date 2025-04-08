@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	containerExec "github.com/threatflux/dockerServerMangerGoMCP/internal/docker/container/exec" // Added import
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/middleware" // Removed unused import
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/utils"
 )

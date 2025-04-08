@@ -3,9 +3,7 @@ package image
 import (
 	"bytes"
 	"errors"
-	// "fmt" // Removed unused import
 	"io"
-	// "mime/multipart" // Removed unused import
 	"net/http"
 	"os"
 	"path/filepath"

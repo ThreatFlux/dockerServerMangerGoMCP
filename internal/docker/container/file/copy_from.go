@@ -3,7 +3,6 @@ package file
 
 import (
 	"context"
-	// "errors" // Removed unused import
 	"fmt"
 	"io"
 	"os"

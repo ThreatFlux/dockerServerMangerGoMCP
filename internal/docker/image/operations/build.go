@@ -18,7 +18,6 @@ import (
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/sirupsen/logrus"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker/image"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/utils" // Removed unused import
 )
 
 // BuildManager manages image build operations

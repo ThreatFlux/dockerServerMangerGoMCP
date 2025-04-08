@@ -16,8 +16,6 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/sirupsen/logrus"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/utils/archiver"
-	// "sync" // Removed unused import
-	// "sync" // Removed unused import
 )
 
 // ProgressCallback is a function that is called with progress updates

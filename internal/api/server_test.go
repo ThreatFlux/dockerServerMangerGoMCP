@@ -5,20 +5,12 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
-	// "context" // Removed unused import
-	// "net/http" // Removed unused import
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	// "github.com/stretchr/testify/mock" // Removed unused import (mocks moved)
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/auth"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/config"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/database" // Removed unused import (mocks moved)
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker_test"    // Removed unused import (mocks moved)
-	// gorm "gorm.io/gorm"                                             // Removed unused import (mocks moved)
-	// dockerClient "github.com/docker_test/docker_test/client"                  // Removed unused import (mocks moved)
-	// dockerTypes "github.com/docker_test/docker_test/api/types"                // Removed unused import (mocks moved)
 )
 
 // MockDB and MockDockerManager are defined in mocks_test.go

@@ -8,9 +8,6 @@ import (
 	sdkContainer "github.com/docker/docker/api/types/container"                                  // Renamed alias
 	"github.com/docker/docker/api/types/network"                                                 // Added for mapping
 	dockerSvcContainer "github.com/threatflux/dockerServerMangerGoMCP/internal/docker/container" // Import local container package
-	// "github.com/docker_test/go-connections/nat" // Needed for port mapping
-	// specs "github.com/opencontainers/image-spec/specs-go/v1" // Needed for platform
-	// "github.com/docker_test/docker_test/api/types/mount" // Needed for volume mapping
 
 	"github.com/gin-gonic/gin"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/middleware"

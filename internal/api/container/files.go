@@ -1,11 +1,8 @@
 package container
 
 import (
-	// "archive/tar" // Removed unused import
-	// "bytes" // Removed unused import
 	"fmt"
 	"io"
-	// "net/http" // Removed unused import
 	"os"            // Re-add for temp file handling
 	"path/filepath" // Added for path cleaning
 	"strings"       // Added for error checking

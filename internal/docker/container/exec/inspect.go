@@ -6,15 +6,13 @@ import (
 	"fmt"
 	"time"
 
-	// "github.com/docker_test/docker_test/api/types" // Removed unused import
-	// "github.com/docker_test/docker_test/api/types/container" // Keep commented
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/errdefs"
 	"github.com/sirupsen/logrus"
 )
 
-// ExecInfo represents information about an exec instance
-type ExecInfo struct {
+// Info represents information about an exec instance
+type Info struct {
 	ID          string    `json:"id"`
 	ContainerID string    `json:"container_id"`
 	Command     []string  `json:"command"`
@@ -39,7 +37,7 @@ type InspectOptions struct {
 }
 
 // Inspect inspects an exec instance
-func Inspect(ctx context.Context, client client.APIClient, execID string, options InspectOptions) (*ExecInfo, error) {
+func Inspect(ctx context.Context, client client.APIClient, execID string, options InspectOptions) (*Info, error) {
 	if execID == "" {
 		return nil, fmt.Errorf("empty exec ID")
 	}
@@ -65,7 +63,7 @@ func Inspect(ctx context.Context, client client.APIClient, execID string, option
 	}
 
 	// Create exec info - temporarily remove ProcessConfig related fields
-	execInfo := &ExecInfo{
+	execInfo := &Info{
 		ID:          execID,
 		ContainerID: execInspect.ContainerID,
 		Running:     execInspect.Running,
@@ -94,7 +92,7 @@ func Inspect(ctx context.Context, client client.APIClient, execID string, option
 }
 
 // InspectMultiple inspects multiple exec instances
-func InspectMultiple(ctx context.Context, client client.APIClient, execIDs []string, options InspectOptions) (map[string]*ExecInfo, error) {
+func InspectMultiple(ctx context.Context, client client.APIClient, execIDs []string, options InspectOptions) (map[string]*Info, error) {
 	if len(execIDs) == 0 {
 		return nil, fmt.Errorf("no exec IDs provided")
 	}
@@ -110,7 +108,7 @@ func InspectMultiple(ctx context.Context, client client.APIClient, execIDs []str
 		defer cancel()
 	}
 
-	result := make(map[string]*ExecInfo)
+	result := make(map[string]*Info)
 	var firstErr error
 
 	for _, execID := range execIDs {
@@ -137,7 +135,7 @@ func InspectMultiple(ctx context.Context, client client.APIClient, execIDs []str
 }
 
 // ListExecs lists all exec instances for a container (UNRELIABLE)
-func ListExecs(ctx context.Context, client client.APIClient, containerID string, options InspectOptions) ([]*ExecInfo, error) {
+func ListExecs(ctx context.Context, client client.APIClient, containerID string, options InspectOptions) ([]*Info, error) {
 	if containerID == "" {
 		return nil, fmt.Errorf("empty container ID")
 	}
@@ -160,7 +158,7 @@ func ListExecs(ctx context.Context, client client.APIClient, containerID string,
 	}
 
 	logger.Warn("ListExecs function is unreliable and likely returns an empty list.")
-	return []*ExecInfo{}, nil // Return empty list as this method is unreliable
+	return []*Info{}, nil // Return empty list as this method is unreliable
 }
 
 // WaitForExecToComplete waits for an exec instance to complete
@@ -207,12 +205,12 @@ func GetRunningExecsCount(ctx context.Context, client client.APIClient, containe
 }
 
 // JSON serializes an ExecInfo to JSON
-func (e *ExecInfo) JSON() ([]byte, error) {
+func (e *Info) JSON() ([]byte, error) {
 	return json.Marshal(e)
 }
 
 // String returns a string representation of an ExecInfo
-func (e *ExecInfo) String() string {
+func (e *Info) String() string {
 	var status string
 	if e.Running {
 		status = "Running"

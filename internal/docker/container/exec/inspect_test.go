@@ -379,7 +379,7 @@ func TestGetRunningExecsCount(t *testing.T) {
 
 func TestExecInfo_JSON(t *testing.T) {
 	// Create an ExecInfo
-	execInfo := &ExecInfo{
+	execInfo := &Info{
 		ID:          "test-exec-id",
 		ContainerID: "test-container",
 		Command:     []string{"ls", "-la"},
@@ -408,7 +408,7 @@ func TestExecInfo_JSON(t *testing.T) {
 
 func TestExecInfo_String(t *testing.T) {
 	// Test with a running exec
-	runningExec := &ExecInfo{
+	runningExec := &Info{
 		ID:          "running-exec-id",
 		ContainerID: "test-container",
 		Command:     []string{"top"},
@@ -421,7 +421,7 @@ func TestExecInfo_String(t *testing.T) {
 	assert.Contains(t, runningStr, "Running")
 
 	// Test with a completed exec
-	completedExec := &ExecInfo{
+	completedExec := &Info{
 		ID:          "completed-exec-id",
 		ContainerID: "test-container",
 		Command:     []string{"echo", "hello"},
@@ -435,7 +435,7 @@ func TestExecInfo_String(t *testing.T) {
 	assert.Contains(t, completedStr, "Exited with code 0")
 
 	// Test with a failed exec
-	failedExec := &ExecInfo{
+	failedExec := &Info{
 		ID:          "failed-exec-id",
 		ContainerID: "test-container",
 		Command:     []string{"non-existent-command"},

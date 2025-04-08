@@ -34,7 +34,6 @@ import (
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/database"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker"
 	"golang.org/x/crypto/bcrypt" // Added for password hashing cost
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Removed unused import
 )
 
 // Version information (will be set during build)

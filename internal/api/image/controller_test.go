@@ -20,9 +20,9 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/auth"
-	auth_test "github.com/threatflux/dockerServerMangerGoMCP/internal/auth"             // Use main auth package for MockService
-	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker"                     // Import docker_test package for Manager
-	image_service "github.com/threatflux/dockerServerMangerGoMCP/internal/docker/image" // Alias for image service package
+	authtest "github.com/threatflux/dockerServerMangerGoMCP/internal/auth"             // Use main auth package for MockService
+	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker"                    // Import docker_test package for Manager
+	imageservice "github.com/threatflux/dockerServerMangerGoMCP/internal/docker/image" // Alias for image service package
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/middleware"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
 )
@@ -52,14 +52,14 @@ func (m *MockImageService) ImageRemove(ctx context.Context, imageID string, opti
 	}
 	return args.Get(0).([]image.DeleteResponse), args.Error(1)
 }
-func (m *MockImageService) List(ctx context.Context, options image_service.ListOptions) ([]image.Summary, error) { // Use alias
+func (m *MockImageService) List(ctx context.Context, options imageservice.ListOptions) ([]image.Summary, error) { // Use alias
 	args := m.Called(ctx, options)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).([]image.Summary), args.Error(1)
 }
-func (m *MockImageService) Build(ctx context.Context, options image_service.BuildOptions) (io.ReadCloser, error) { // Added missing method
+func (m *MockImageService) Build(ctx context.Context, options imageservice.BuildOptions) (io.ReadCloser, error) { // Added missing method
 	args := m.Called(ctx, options)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -81,11 +81,11 @@ func (m *MockImageService) History(ctx context.Context, imageID string) ([]image
 	}
 	return args.Get(0).([]image.HistoryResponseItem), args.Error(1)
 }
-func (m *MockImageService) Prune(ctx context.Context, options image_service.PruneOptions) (image.PruneReport, error) { // Use alias
+func (m *MockImageService) Prune(ctx context.Context, options imageservice.PruneOptions) (image.PruneReport, error) { // Use alias
 	args := m.Called(ctx, options)
 	return args.Get(0).(image.PruneReport), args.Error(1)
 }
-func (m *MockImageService) Search(ctx context.Context, term string, options image_service.SearchOptions) ([]registrytypes.SearchResult, error) { // Use alias
+func (m *MockImageService) Search(ctx context.Context, term string, options imageservice.SearchOptions) ([]registrytypes.SearchResult, error) { // Use alias
 	args := m.Called(ctx, term, options)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -194,7 +194,7 @@ func setupTestController(t *testing.T) (*Controller, *gin.Engine, *MockImageServ
 	mockDockerManager := new(MockManager) // Use local MockManager
 
 	// Mock auth service
-	authService := &auth_test.MockService{}
+	authService := &authtest.MockService{}
 	authService.VerifyFunc = func(ctx context.Context, tokenString string) (*auth.TokenDetails, error) {
 		if tokenString == "Bearer valid-token" || tokenString == "valid-token" {
 			return &auth.TokenDetails{UserID: 1, Roles: []string{string(models.RoleUser)}}, nil

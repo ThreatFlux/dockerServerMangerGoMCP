@@ -11,15 +11,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/docker/docker/api/types/events"             // Added for GetEvents
+	volumeTypes "github.com/docker/docker/api/types/volume" // Added for PruneReport, Volume
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/auth"
-	// Removed duplicate io import on line 20
-	"github.com/docker/docker/api/types/events"             // Added for GetEvents
-	volumeTypes "github.com/docker/docker/api/types/volume" // Added for PruneReport, Volume
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker/volume"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/middleware"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"

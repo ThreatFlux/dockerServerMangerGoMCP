@@ -1,16 +1,13 @@
 package container
 
 import (
-	// "bytes" // Removed unused import
 	"context"
 	"encoding/json"
 	"errors"
-	// "fmt" // Removed unused import
 	"io" // Added import
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	// "time" // Removed unused import
 
 	apitypes "github.com/docker/docker/api/types" // Import types with alias
 	"github.com/docker/docker/api/types/container"
@@ -22,9 +19,9 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/auth"
-	auth_test "github.com/threatflux/dockerServerMangerGoMCP/internal/auth" // Use main auth package for MockService
+	authtest "github.com/threatflux/dockerServerMangerGoMCP/internal/auth" // Use main auth package for MockService
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker"
-	container_service "github.com/threatflux/dockerServerMangerGoMCP/internal/docker/container" // Alias for container service package
+	containerservice "github.com/threatflux/dockerServerMangerGoMCP/internal/docker/container" // Alias for container service package
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/middleware"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
 )
@@ -71,7 +68,7 @@ func (m *MockContainerService) NetworkConnect(ctx context.Context, networkID, co
 }
 
 // --- Methods previously defined in this interface ---
-func (m *MockContainerService) List(ctx context.Context, opts container_service.ListOptions) ([]models.Container, error) { // Use models.Container and correct options type
+func (m *MockContainerService) List(ctx context.Context, opts containerservice.ListOptions) ([]models.Container, error) { // Use models.Container and correct options type
 	args := m.Called(ctx, opts)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -85,46 +82,46 @@ func (m *MockContainerService) Get(ctx context.Context, containerID string) (*mo
 	}
 	return args.Get(0).(*models.Container), args.Error(1)
 }
-func (m *MockContainerService) Create(ctx context.Context, opts container_service.CreateOptions) (*models.Container, error) { // Use models.Container and correct options type
+func (m *MockContainerService) Create(ctx context.Context, opts containerservice.CreateOptions) (*models.Container, error) { // Use models.Container and correct options type
 	args := m.Called(ctx, opts)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).(*models.Container), args.Error(1)
 }
-func (m *MockContainerService) Start(ctx context.Context, containerID string, opts container_service.StartOptions) error { // Use correct options type
+func (m *MockContainerService) Start(ctx context.Context, containerID string, opts containerservice.StartOptions) error { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	return args.Error(0)
 }
-func (m *MockContainerService) Stop(ctx context.Context, containerID string, opts container_service.StopOptions) error { // Use correct options type
+func (m *MockContainerService) Stop(ctx context.Context, containerID string, opts containerservice.StopOptions) error { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	return args.Error(0)
 }
-func (m *MockContainerService) Restart(ctx context.Context, containerID string, opts container_service.RestartOptions) error { // Use correct options type
+func (m *MockContainerService) Restart(ctx context.Context, containerID string, opts containerservice.RestartOptions) error { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	return args.Error(0)
 }
-func (m *MockContainerService) Kill(ctx context.Context, containerID string, opts container_service.KillOptions) error { // Use correct options type
+func (m *MockContainerService) Kill(ctx context.Context, containerID string, opts containerservice.KillOptions) error { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	return args.Error(0)
 }
-func (m *MockContainerService) Remove(ctx context.Context, containerID string, opts container_service.RemoveOptions) error { // Use correct options type
+func (m *MockContainerService) Remove(ctx context.Context, containerID string, opts containerservice.RemoveOptions) error { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	return args.Error(0)
 }
-func (m *MockContainerService) Logs(ctx context.Context, containerID string, opts container_service.LogOptions) (io.ReadCloser, error) { // Use correct options type
+func (m *MockContainerService) Logs(ctx context.Context, containerID string, opts containerservice.LogOptions) (io.ReadCloser, error) { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).(io.ReadCloser), args.Error(1)
 }
-func (m *MockContainerService) Stats(ctx context.Context, containerID string, opts container_service.StatsOptions) (models.ContainerStats, error) { // Use correct options type
+func (m *MockContainerService) Stats(ctx context.Context, containerID string, opts containerservice.StatsOptions) (models.ContainerStats, error) { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	val, _ := args.Get(0).(models.ContainerStats)
 	return val, args.Error(1)
 }
-func (m *MockContainerService) StreamStats(ctx context.Context, containerID string, opts container_service.StatsOptions) (<-chan models.ContainerStats, <-chan error) { // Use correct options type
+func (m *MockContainerService) StreamStats(ctx context.Context, containerID string, opts containerservice.StatsOptions) (<-chan models.ContainerStats, <-chan error) { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	var statsCh chan models.ContainerStats
 	var errCh chan error
@@ -136,16 +133,16 @@ func (m *MockContainerService) StreamStats(ctx context.Context, containerID stri
 	}
 	return statsCh, errCh
 }
-func (m *MockContainerService) Prune(ctx context.Context, opts container_service.PruneOptions) (container_service.PruneResult, error) { // Use correct options and result types
+func (m *MockContainerService) Prune(ctx context.Context, opts containerservice.PruneOptions) (containerservice.PruneResult, error) { // Use correct options and result types
 	args := m.Called(ctx, opts)
-	val, _ := args.Get(0).(container_service.PruneResult)
+	val, _ := args.Get(0).(containerservice.PruneResult)
 	return val, args.Error(1)
 }
 func (m *MockContainerService) Rename(ctx context.Context, containerID, newName string) error {
 	args := m.Called(ctx, containerID, newName)
 	return args.Error(0)
 }
-func (m *MockContainerService) Update(ctx context.Context, containerID string, opts container_service.UpdateOptions) error { // Use correct options type
+func (m *MockContainerService) Update(ctx context.Context, containerID string, opts containerservice.UpdateOptions) error { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	return args.Error(0)
 }
@@ -157,11 +154,11 @@ func (m *MockContainerService) Unpause(ctx context.Context, containerID string) 
 	args := m.Called(ctx, containerID)
 	return args.Error(0)
 }
-func (m *MockContainerService) Commit(ctx context.Context, containerID string, opts container_service.CommitOptions) (string, error) { // Use correct options type
+func (m *MockContainerService) Commit(ctx context.Context, containerID string, opts containerservice.CommitOptions) (string, error) { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	return args.String(0), args.Error(1)
 }
-func (m *MockContainerService) Wait(ctx context.Context, containerID string, opts container_service.WaitOptions) (<-chan container.WaitResponse, <-chan error) { // Use correct options type
+func (m *MockContainerService) Wait(ctx context.Context, containerID string, opts containerservice.WaitOptions) (<-chan container.WaitResponse, <-chan error) { // Use correct options type
 	args := m.Called(ctx, containerID, opts)
 	var bodyChan chan container.WaitResponse
 	var errChan chan error
@@ -173,24 +170,24 @@ func (m *MockContainerService) Wait(ctx context.Context, containerID string, opt
 	}
 	return bodyChan, errChan
 }
-func (m *MockContainerService) Exec(ctx context.Context, containerID string, opts container_service.ExecOptions) (container_service.ExecResult, error) { // Use correct options and result types
+func (m *MockContainerService) Exec(ctx context.Context, containerID string, opts containerservice.ExecOptions) (containerservice.ExecResult, error) { // Use correct options and result types
 	args := m.Called(ctx, containerID, opts)
-	val, _ := args.Get(0).(container_service.ExecResult)
+	val, _ := args.Get(0).(containerservice.ExecResult)
 	return val, args.Error(1)
 }
-func (m *MockContainerService) Top(ctx context.Context, containerID string, psArgs string) (container_service.TopResult, error) { // Use correct result type
+func (m *MockContainerService) Top(ctx context.Context, containerID string, psArgs string) (containerservice.TopResult, error) { // Use correct result type
 	args := m.Called(ctx, containerID, psArgs)
-	val, _ := args.Get(0).(container_service.TopResult)
+	val, _ := args.Get(0).(containerservice.TopResult)
 	return val, args.Error(1)
 }
-func (m *MockContainerService) Changes(ctx context.Context, containerID string) ([]container_service.ChangeItem, error) { // Use correct result type
+func (m *MockContainerService) Changes(ctx context.Context, containerID string) ([]containerservice.ChangeItem, error) { // Use correct result type
 	args := m.Called(ctx, containerID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).([]container_service.ChangeItem), args.Error(1)
+	return args.Get(0).([]containerservice.ChangeItem), args.Error(1)
 }
-func (m *MockContainerService) GetArchive(ctx context.Context, containerID string, opts container_service.ArchiveOptions) (io.ReadCloser, models.ResourceStat, error) { // Use correct options and result types
+func (m *MockContainerService) GetArchive(ctx context.Context, containerID string, opts containerservice.ArchiveOptions) (io.ReadCloser, models.ResourceStat, error) { // Use correct options and result types
 	args := m.Called(ctx, containerID, opts)
 	var reader io.ReadCloser
 	if args.Get(0) != nil {
@@ -311,7 +308,7 @@ func setupTestController(t *testing.T) (*Controller, *gin.Engine, *MockContainer
 	mockDockerManager := new(MockManager) // Use local MockManager
 
 	// Mock auth service
-	authService := &auth_test.MockService{}
+	authService := &authtest.MockService{}
 	authService.VerifyFunc = func(ctx context.Context, tokenString string) (*auth.TokenDetails, error) {
 		if tokenString == "Bearer valid-token" || tokenString == "valid-token" {
 			return &auth.TokenDetails{UserID: 1, Roles: []string{string(models.RoleUser)}}, nil

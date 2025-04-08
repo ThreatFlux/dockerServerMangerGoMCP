@@ -15,7 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/api"
-	// Removed import integration_helpers to break cycle
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/auth"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/config"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/database"

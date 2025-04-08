@@ -3,10 +3,7 @@ package network
 import (
 	"context"
 	"fmt"
-	// "time" // Removed unused import
 
-	// "github.com/docker_test/docker_test/api/types/events" // Removed unused import
-	// "github.com/docker_test/docker_test/api/types/filters" // Removed unused import
 	networktypes "github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/errdefs" // Import errdefs for IsNotFound
 	"github.com/sirupsen/logrus"

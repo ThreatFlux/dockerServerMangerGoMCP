@@ -27,7 +27,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/utils" // Commented out as it causes undefined errors
 )
 
 // Security default values

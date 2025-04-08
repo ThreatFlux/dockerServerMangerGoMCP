@@ -5,12 +5,10 @@ import (
 	"fmt" // Added fmt import for checkFileExists
 	"io/ioutil"
 	"os"
-	// "sync" // Removed unused import
 	"testing"
 	"time"
 
 	"github.com/docker/docker/api/types"
-	// "github.com/docker_test/docker_test/client" // Removed unused import
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

@@ -9,12 +9,10 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
-	imagetypes "github.com/docker/docker/api/types/image" // Keep alias
-	"github.com/docker/docker/client"                     // Added client import for options
+	imagetypes "github.com/docker/docker/api/types/image"
+	"github.com/docker/docker/client"
 	"github.com/docker/docker/errdefs"
-	// "github.com/docker_test/go-connections/nat" // Removed unused import
 	"github.com/sirupsen/logrus"
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/utils" // Commented out until utils is fixed
 )
 
 // Common errors
@@ -27,8 +25,8 @@ var (
 	ErrContextCancelled = errors.New("operation cancelled")
 )
 
-// ImageInspectorClient defines the interface for Docker client methods used by the image inspector.
-type ImageInspectorClient interface {
+// InspectorClient defines the interface for Docker client methods used by the image inspector.
+type InspectorClient interface {
 	ImageList(ctx context.Context, options imagetypes.ListOptions) ([]imagetypes.Summary, error)
 	ImageInspectWithRaw(ctx context.Context, imageID string) (types.ImageInspect, []byte, error)
 	ImageHistory(ctx context.Context, imageID string, options ...client.ImageHistoryOption) ([]imagetypes.HistoryResponseItem, error) // Added options parameter
@@ -36,12 +34,12 @@ type ImageInspectorClient interface {
 
 // Inspector provides methods for inspecting Docker images
 type Inspector struct {
-	client ImageInspectorClient // Use the interface type
+	client InspectorClient // Use the interface type
 	logger *logrus.Logger
 }
 
 // NewInspector creates a new image inspector
-func NewInspector(client ImageInspectorClient, logger *logrus.Logger) *Inspector { // Accept the interface type
+func NewInspector(client InspectorClient, logger *logrus.Logger) *Inspector { // Accept the interface type
 	// If no client (real or mock) is provided, create a default real client.
 	// Note: This requires the 'client' package alias if creating a real client here.
 	// For simplicity in this refactor, we assume a client is always provided.
@@ -127,10 +125,9 @@ func (i *Inspector) Inspect(ctx context.Context, imageIDOrName string) (types.Im
 	}
 
 	i.logger.WithFields(logrus.Fields{
-		"image":   imageIDOrName,
-		"id":      inspect.ID,
-		"created": inspect.Created,
-		// "size":     utils.FormatImageSize(inspect.Size), // Commented out until utils is fixed
+		"image":      imageIDOrName,
+		"id":         inspect.ID,
+		"created":    inspect.Created,
 		"size_bytes": inspect.Size,
 	}).Debug("Inspected Docker image")
 	return inspect, nil
@@ -284,7 +281,7 @@ func (i *Inspector) ImageExists(ctx context.Context, imageIDOrName string) (bool
 
 // GetAllTags returns all tags for an image
 func (i *Inspector) GetAllTags(ctx context.Context, imageID string) ([]string, error) {
-	// Use imagetypes.ListOptions
+	// Use image types.ListOptions
 	images, err := i.client.ImageList(ctx, imagetypes.ListOptions{
 		All: true,
 	})
@@ -327,7 +324,7 @@ func (i *Inspector) GetImageLayers(ctx context.Context, imageIDOrName string) ([
 
 // GetTotalImagesCount returns the total number of images
 func (i *Inspector) GetTotalImagesCount(ctx context.Context) (int, error) {
-	// Use imagetypes.ListOptions
+	// Use image types.ListOptions
 	images, err := i.client.ImageList(ctx, imagetypes.ListOptions{
 		All: true,
 	})
@@ -339,7 +336,7 @@ func (i *Inspector) GetTotalImagesCount(ctx context.Context) (int, error) {
 
 // GetTotalImageDiskUsage returns the total disk space used by all images
 func (i *Inspector) GetTotalImageDiskUsage(ctx context.Context) (int64, error) {
-	// Use imagetypes.ListOptions
+	// Use image types.ListOptions
 	images, err := i.client.ImageList(ctx, imagetypes.ListOptions{
 		All: true,
 	})
