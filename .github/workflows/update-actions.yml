@@ -1,0 +1,32 @@
+name: Update GitHub Actions
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update:
+    name: Update Actions
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+
+      - name: Set up Go
+        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b  # v5.4.0
+        with:
+          go-version: '1.24.2'
+          check-latest: true
+
+      - name: Build updater
+        run: make build
+
+      - name: Run updater
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+          OWNER: ThreatFlux
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: ./bin/ghactions-updater -owner ThreatFlux -repo . -repo-name dockerServerMangerGoMCP

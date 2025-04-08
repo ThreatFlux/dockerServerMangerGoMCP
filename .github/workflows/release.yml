@@ -1,0 +1,151 @@
+name: Release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  wait-for-tests:
+    name: Wait for Tests
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, 'skip ci') }}
+    steps:
+      - name: Wait for tests
+        uses: lewagon/wait-on-check-action@ccfb013c15c8afb7bf2b7c028fb74dc5a068cccc  # v1.3.4
+        with:
+          ref: ${{ github.ref }}
+          check-name: 'Test'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 15
+          allowed-conclusions: success,skipped
+
+  release:
+    name: Create Release
+    needs: wait-for-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b  # v5.4.0
+        with:
+          go-version: '1.24.2'
+          cache: true
+
+      - name: Generate version
+        id: version
+        run: |
+          DATE=$(date '+%Y%m%d')
+          LAST_TAG=$(git tag --list "v1.${DATE}.*" --sort=-version:refname | head -n 1)
+          
+          if [ -z "$LAST_TAG" ]; then
+            # First release of the day
+            VERSION="v1.${DATE}.1"
+          else
+            # Increment patch number
+            PATCH=$(echo $LAST_TAG | awk -F. '{print $NF}')
+            NEXT_PATCH=$((PATCH + 1))
+            VERSION="v1.${DATE}.${NEXT_PATCH}"
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version will be: $VERSION"
+
+      - name: Update CHANGELOG
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          sed -i "s/## \[Unreleased\]/## [Unreleased]\n\n## [$VERSION] - $(date '+%Y-%m-%d')/" CHANGELOG.md
+          echo "[${VERSION}]: https://github.com/ThreatFlux/dockerServerMangerGoMCP/releases/tag/${VERSION}" >> CHANGELOG.md
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add CHANGELOG.md
+          git commit -m "Update CHANGELOG for release ${VERSION}"
+          git push
+
+      - name: Build
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          COMMIT=$(git rev-parse --short HEAD)
+          cd cmd/server
+          GOOS=linux GOARCH=amd64 go build -ldflags="-X main.Version=${VERSION} -X main.Commit=${COMMIT}" -o ../../../docker-server-manager-linux-amd64 .
+          GOOS=darwin GOARCH=amd64 go build -ldflags="-X main.Version=${VERSION} -X main.Commit=${COMMIT}" -o ../../../docker-server-manager-darwin-amd64 .
+          GOOS=windows GOARCH=amd64 go build -ldflags="-X main.Version=${VERSION} -X main.Commit=${COMMIT}" -o ../../../docker-server-manager-windows-amd64.exe .
+
+      - name: Build and push Docker image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          COMMIT=$(git rev-parse --short HEAD)
+          echo $GITHUB_TOKEN | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker build \
+            --build-arg VERSION=$VERSION \
+            --build-arg COMMIT=$COMMIT \
+            -t ghcr.io/threatflux/dockerServerMangerGoMCP:$VERSION .
+          docker tag ghcr.io/threatflux/dockerServerMangerGoMCP:$VERSION ghcr.io/threatflux/dockerServerMangerGoMCP:latest
+          docker push ghcr.io/threatflux/dockerServerMangerGoMCP:$VERSION
+          docker push ghcr.io/threatflux/dockerServerMangerGoMCP:latest
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e # v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: Release ${{ steps.version.outputs.version }}
+          body: |
+            ${{ steps.version.outputs.version }}
+            
+            ## Changes
+            ${{ github.event.head_commit.message }}
+            
+            For full details, see the [CHANGELOG](CHANGELOG.md)
+          draft: false
+          prerelease: false
+
+      - name: Generate checksums
+        run: |
+          sha256sum docker-server-manager-linux-amd64 > docker-server-manager-linux-amd64.sha256
+          sha256sum docker-server-manager-darwin-amd64 > docker-server-manager-darwin-amd64.sha256
+          sha256sum docker-server-manager-windows-amd64.exe > docker-server-manager-windows-amd64.exe.sha256
+
+      - name: Verify Docker image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          docker pull ghcr.io/threatflux/dockerServerMangerGoMCP:$VERSION
+          docker run --rm ghcr.io/threatflux/dockerServerMangerGoMCP:$VERSION -h
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          # Extract changes between Unreleased and the new version
+          awk -v ver="[$VERSION]" '
+            BEGIN { p=0 }
+            /^## \[Unreleased\]/ { p=1; next }
+            /^## \[/ { if(p==1) exit }
+            p==1 { print }
+          ' CHANGELOG.md > release_notes.md
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda  # v2.2.1
+        with:
+          files: |
+            docker-server-manager-linux-amd64
+            docker-server-manager-linux-amd64.sha256
+            docker-server-manager-darwin-amd64
+            docker-server-manager-darwin-amd64.sha256
+            docker-server-manager-windows-amd64.exe
+            docker-server-manager-windows-amd64.exe.sha256
+          tag_name: ${{ steps.version.outputs.version }}
+          body_path: release_notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
