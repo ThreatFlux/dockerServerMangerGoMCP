@@ -180,7 +180,6 @@ func SanitizeProjectName(name string) string {
 	return name
 }
 
-// convertProjectToInternalModel converts a compose-go project to our internal mode
 // convertProjectToInternalModel converts a compose-go project to our internal model
 // It handles the conversion of services, networks, volumes, secrets, and configs
 // to their respective internal representations.
@@ -192,10 +191,10 @@ func SanitizeProjectName(name string) string {
 // It returns an error if any conversion fails.
 // Note: The project.Version is not directly available in the Project struct,
 // but we can set it in the internal model if needed.
+func convertProjectToInternalModel(project *composetypes.Project) (*models.ComposeFile, error) {
 	if project == nil {
 		return nil, errors.New("cannot convert nil project")
 	}
-	if project == nil { return nil, errors.New("cannot convert nil project") }
 	model := &models.ComposeFile{
 		Services:   make(map[string]models.ServiceConfig),
 		Networks:   make(map[string]models.NetworkConfig),
@@ -206,41 +205,41 @@ func SanitizeProjectName(name string) string {
 		// Version:    project.Version, // Project struct doesn't have Version
 	}
 	for _, service := range project.Services {
+		internalService, err := convertServiceToInternalModel(service)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert service '%s': %w", service.Name, err)
 		}
-		if err != nil { return nil, fmt.Errorf("failed to convert service '%s': %w", service.Name, err) }
 		model.Services[service.Name] = *internalService
 	}
 	for name, network := range project.Networks {
+		internalNetwork, err := convertNetworkToInternalModel(network)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert network '%s': %w", name, err)
 		}
-		if err != nil { return nil, fmt.Errorf("failed to convert network '%s': %w", name, err) }
 		internalNetwork.Name = name
 		model.Networks[name] = *internalNetwork
 	}
 	for name, volume := range project.Volumes {
+		internalVolume, err := convertVolumeToInternalModel(volume)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert volume '%s': %w", name, err)
 		}
-		if err != nil { return nil, fmt.Errorf("failed to convert volume '%s': %w", name, err) }
 		internalVolume.Name = name
 		model.Volumes[name] = *internalVolume
 	}
 	for name, secret := range project.Secrets {
+		internalSecret, err := convertSecretToInternalModel(secret)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert secret '%s': %w", name, err)
 		}
-		if err != nil { return nil, fmt.Errorf("failed to convert secret '%s': %w", name, err) }
 		internalSecret.Name = name
 		model.Secrets[name] = *internalSecret
 	}
 	for name, config := range project.Configs {
+		internalConfig, err := convertConfigToInternalModel(config)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert config '%s': %w", name, err)
 		}
-		if err != nil { return nil, fmt.Errorf("failed to convert config '%s': %w", name, err) }
 		internalConfig.Name = name
 		model.Configs[name] = *internalConfig
 	}
@@ -254,15 +253,15 @@ func convertServiceToInternalModel(service composetypes.ServiceConfig) (*models.
 		NetworkMode: service.NetworkMode,
 		Restart:     service.Restart,
 		Extensions:  service.Extensions,
+		Build:       convertBuildConfig(service.Build),
 		Command:     service.Command,                         // Assign directly ([]string is compatible with interface{})
-		Command:     service.Command, // Assign directly ([]string is compatible with interface{})
+		Environment: convertEnvironment(service.Environment), // Keep as interface{}
 		EnvFile:     convertEnvFiles(service.EnvFiles),       // Keep as interface{}
-		EnvFile:     convertEnvFiles(service.EnvFiles), // Keep as interface{}
 		Ports:       convertPorts(service.Ports),
 		Expose:      convertStringListToInterfaceList(service.Expose),
 		VolumesFrom: service.VolumesFrom,
+		Networks:    convertServiceNetworks(service.Networks), // Keep as interface{}
 		DependsOn:   convertDependsOn(service.DependsOn),      // Keep as interface{}
-		DependsOn:   convertDependsOn(service.DependsOn), // Keep as interface{}
 		HealthCheck: convertHealthCheck(service.HealthCheck),
 		Deploy:      convertDeployConfig(service.Deploy),
 		Labels:      convertStringMapToInterface(service.Labels), // Keep as interface{}
@@ -277,16 +276,16 @@ func convertServiceToInternalModel(service composetypes.ServiceConfig) (*models.
 	for i, m := range volumesMounts {
 		// Convert mount.Mount back to a string or map representation suitable for models.ServiceConfig.Volumes
 		if m.Type == mount.TypeBind || m.Type == mount.TypeVolume {
+			volStr := m.Source + ":" + m.Target
 			if m.ReadOnly {
 				volStr += ":ro"
 			}
-			if m.ReadOnly { volStr += ":ro" }
 			volumesInterface[i] = volStr
 		} else {
+			volMap := map[string]interface{}{
 				"type":      string(m.Type),
 				"source":    m.Source,
 				"target":    m.Target,
-				"target": m.Target,
 				"read_only": m.ReadOnly,
 			}
 			volumesInterface[i] = volMap
@@ -296,18 +295,18 @@ func convertServiceToInternalModel(service composetypes.ServiceConfig) (*models.
 	return internal, nil
 }
 
+func convertBuildConfig(build *composetypes.BuildConfig) interface{} {
 	if build == nil {
 		return nil
 	}
-	if build == nil { return nil }
 	buildMap := make(map[string]interface{})
+	buildMap["context"] = build.Context
 	if build.Dockerfile != "" {
 		buildMap["dockerfile"] = build.Dockerfile
 	}
 	if len(build.Args) > 0 {
 		buildMap["args"] = build.Args
 	}
-	if len(build.Args) > 0 { buildMap["args"] = build.Args }
 	// Return map or just context string if simple
 	if len(buildMap) == 1 && build.Context != "" && build.Dockerfile == "" && len(build.Args) == 0 {
 		return build.Context
@@ -316,10 +315,10 @@ func convertServiceToInternalModel(service composetypes.ServiceConfig) (*models.
 }
 
 func convertEnvironment(env composetypes.MappingWithEquals) interface{} {
+	// Return as map[string]interface{} to better match model's interface{}
 	if len(env) == 0 {
 		return nil
 	}
-	if len(env) == 0 { return nil }
 	envMap := make(map[string]interface{}, len(env))
 	for k, v := range env {
 		if v == nil {
@@ -333,41 +332,41 @@ func convertEnvironment(env composetypes.MappingWithEquals) interface{} {
 
 // convertStringOrList removed as it's no longer needed
 
+func convertEnvFiles(envFiles []composetypes.EnvFile) interface{} {
 	if len(envFiles) == 0 {
 		return nil
 	}
 	if len(envFiles) == 1 {
 		return envFiles[0].Path
 	} // Return string if only one
-	if len(envFiles) == 1 { return envFiles[0].Path } // Return string if only one
+	result := make([]string, len(envFiles))
 	for i, ef := range envFiles {
 		result[i] = ef.Path
 	}
-	for i, ef := range envFiles { result[i] = ef.Path }
 	return result // Return slice if multiple
 }
 
 func convertPorts(ports []composetypes.ServicePortConfig) []interface{} {
 	result := make([]interface{}, len(ports))
 	for i, p := range ports {
+		spec := ""
 		if p.Published != "" && p.Published != "0" {
 			spec += p.Published + ":"
 		}
-		if p.Published != "" && p.Published != "0" { spec += p.Published + ":" }
+		spec += fmt.Sprintf("%d", p.Target)
 		if p.Protocol != "" && p.Protocol != "tcp" {
 			spec += "/" + p.Protocol
 		}
-		if p.Protocol != "" && p.Protocol != "tcp" { spec += "/" + p.Protocol }
 		result[i] = spec
 	}
 	return result
 }
 
 func convertStringListToInterfaceList(list []string) []interface{} {
+	result := make([]interface{}, len(list))
 	for i, s := range list {
 		result[i] = s
 	}
-	for i, s := range list { result[i] = s }
 	return result
 }
 
@@ -404,15 +403,16 @@ func convertVolumes(volumes []composetypes.ServiceVolumeConfig) ([]mount.Mount, 
 	return mounts, nil
 }
 
+func convertServiceNetworks(networks map[string]*composetypes.ServiceNetworkConfig) interface{} {
 	if len(networks) == 0 {
 		return nil
 	}
-	if len(networks) == 0 { return nil }
 	result := make(map[string]interface{})
+	for name, config := range networks {
 		if config == nil {
 			result[name] = nil
 		} else {
-		if config == nil { result[name] = nil } else {
+			netMap := make(map[string]interface{})
 			if len(config.Aliases) > 0 {
 				netMap["aliases"] = config.Aliases
 			}
@@ -422,17 +422,16 @@ func convertVolumes(volumes []composetypes.ServiceVolumeConfig) ([]mount.Mount, 
 			if config.Ipv6Address != "" {
 				netMap["ipv6_address"] = config.Ipv6Address
 			}
-			if config.Ipv6Address != "" { netMap["ipv6_address"] = config.Ipv6Address }
 			result[name] = netMap
 		}
 	}
 	return result
 }
 
+func convertDependsOn(depends map[string]composetypes.ServiceDependency) interface{} {
 	if len(depends) == 0 {
 		return nil
 	}
-	if len(depends) == 0 { return nil }
 	list := make([]string, 0, len(depends))
 	mapForm := make(map[string]interface{})
 	isMap := false
@@ -440,26 +439,27 @@ func convertVolumes(volumes []composetypes.ServiceVolumeConfig) ([]mount.Mount, 
 		list = append(list, name)
 		if dep.Condition != "" || dep.Restart || dep.Required {
 			isMap = true
+			depMap := make(map[string]interface{})
 			if dep.Condition != "" {
 				depMap["condition"] = dep.Condition
 			}
 			if dep.Restart {
 				depMap["restart"] = true
 			}
-			if dep.Restart { depMap["restart"] = true }
 			mapForm[name] = depMap
 		}
+	}
 	if isMap {
 		return mapForm
 	}
-	if isMap { return mapForm }
 	return list
 }
 
+func convertHealthCheck(hc *composetypes.HealthCheckConfig) map[string]interface{} {
 	if hc == nil {
 		return nil
 	}
-	if hc == nil { return nil }
+	hcMap := make(map[string]interface{})
 	if len(hc.Test) > 0 {
 		hcMap["test"] = hc.Test
 	}
@@ -481,64 +481,63 @@ func convertVolumes(volumes []composetypes.ServiceVolumeConfig) ([]mount.Mount, 
 	if hc.Disable {
 		hcMap["disable"] = true
 	}
-	if hc.Disable { hcMap["disable"] = true }
 	return hcMap
 }
 
+func convertDeployConfig(deploy *composetypes.DeployConfig) map[string]interface{} {
 	if deploy == nil {
 		return nil
 	}
-	if deploy == nil { return nil }
+	deployMap := make(map[string]interface{})
 	if deploy.Mode != "" {
 		deployMap["mode"] = deploy.Mode
 	}
 	if deploy.Replicas != nil {
 		deployMap["replicas"] = *deploy.Replicas
 	}
-	if deploy.Replicas != nil { deployMap["replicas"] = *deploy.Replicas }
 	if deploy.Resources.Limits != nil {
+		limitsMap := make(map[string]interface{})
 		if deploy.Resources.Limits.NanoCPUs != 0.0 {
 			limitsMap["cpus"] = deploy.Resources.Limits.NanoCPUs
 		}
 		if deploy.Resources.Limits.MemoryBytes > 0 {
 			limitsMap["memory"] = fmt.Sprintf("%dB", deploy.Resources.Limits.MemoryBytes)
 		}
-		if deploy.Resources.Limits.MemoryBytes > 0 { limitsMap["memory"] = fmt.Sprintf("%dB", deploy.Resources.Limits.MemoryBytes) }
+		if len(limitsMap) > 0 {
 			if resMap, ok := deployMap["resources"].(map[string]interface{}); ok {
 				resMap["limits"] = limitsMap
 			} else {
 				deployMap["resources"] = map[string]interface{}{"limits": limitsMap}
 			}
-			if resMap, ok := deployMap["resources"].(map[string]interface{}); ok { resMap["limits"] = limitsMap } else { deployMap["resources"] = map[string]interface{}{"limits": limitsMap} }
 		}
 	}
 	if deploy.Resources.Reservations != nil {
+		reservationsMap := make(map[string]interface{})
 		if deploy.Resources.Reservations.NanoCPUs != 0.0 {
 			reservationsMap["cpus"] = deploy.Resources.Reservations.NanoCPUs
 		}
 		if deploy.Resources.Reservations.MemoryBytes > 0 {
 			reservationsMap["memory"] = fmt.Sprintf("%dB", deploy.Resources.Reservations.MemoryBytes)
 		}
-		if deploy.Resources.Reservations.MemoryBytes > 0 { reservationsMap["memory"] = fmt.Sprintf("%dB", deploy.Resources.Reservations.MemoryBytes) }
+		if len(reservationsMap) > 0 {
 			if resMap, ok := deployMap["resources"].(map[string]interface{}); ok {
 				resMap["reservations"] = reservationsMap
 			} else {
 				deployMap["resources"] = map[string]interface{}{"reservations": reservationsMap}
 			}
-			if resMap, ok := deployMap["resources"].(map[string]interface{}); ok { resMap["reservations"] = reservationsMap } else { deployMap["resources"] = map[string]interface{}{"reservations": reservationsMap} }
 		}
 	}
 	return deployMap
 }
 
+func convertStringMapToInterface(m map[string]string) interface{} {
 	if len(m) == 0 {
 		return nil
 	}
-	if len(m) == 0 { return nil }
+	result := make(map[string]interface{}, len(m))
 	for k, v := range m {
 		result[k] = v
 	}
-	for k, v := range m { result[k] = v }
 	return result
 }
 
@@ -558,17 +557,18 @@ func convertNetworkToInternalModel(network composetypes.NetworkConfig) (*models.
 	return internal, nil
 }
 
+func convertIPAMConfig(ipam composetypes.IPAMConfig) map[string]interface{} {
 	if ipam.Driver == "" && len(ipam.Config) == 0 {
 		return nil
 	}
-	if ipam.Driver == "" && len(ipam.Config) == 0 { return nil }
+	ipamMap := make(map[string]interface{})
 	if ipam.Driver != "" {
 		ipamMap["driver"] = ipam.Driver
 	}
-	if ipam.Driver != "" { ipamMap["driver"] = ipam.Driver }
 	if len(ipam.Config) > 0 {
 		configList := []map[string]interface{}{}
 		for _, cfg := range ipam.Config {
+			cfgMap := make(map[string]interface{})
 			if cfg.Subnet != "" {
 				cfgMap["subnet"] = cfg.Subnet
 			}
@@ -588,7 +588,6 @@ func convertNetworkToInternalModel(network composetypes.NetworkConfig) (*models.
 		if len(configList) > 0 {
 			ipamMap["config"] = configList
 		}
-		if len(configList) > 0 { ipamMap["config"] = configList }
 	}
 	return ipamMap
 }
