@@ -12,7 +12,7 @@ import (
 	"strings" // Uncommented for ParseRepositoryTag
 	// "time" // Removed unused import
 
-	"github.com/docker/distribution/reference" // Added for ParseImageName
+	"github.com/distribution/reference" // Added for ParseImageName
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"

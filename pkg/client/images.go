@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/docker/distribution/reference"                      // Added for robust image ref parsing
+	"github.com/distribution/reference"                             // Added for robust image ref parsing
 	"github.com/docker/docker/api/types/registry"                   // Import registry types
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Keep internal import
 )

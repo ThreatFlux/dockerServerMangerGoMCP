@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	// Import utils package for ParseImageName
-	"github.com/docker/distribution/reference" // Import for reference.Named
+	"github.com/distribution/reference" // Import for reference.Named
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/utils"
 )
 

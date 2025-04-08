@@ -34,7 +34,6 @@ var (
 
 	// Docker image name validation
 	// Based on Docker's image name validation
-	// https://github.com/docker/distribution/blob/master/reference/regexp.go
 	imageNameRegex = regexp.MustCompile(`^(?:(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])(?:(?:\.(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]))+)?(?::[0-9]+)?/)?[a-z0-9]+(?:(?:(?:[._]|__|[-]*)[a-z0-9]+)+)?(?:(?:/[a-z0-9]+(?:(?:(?:[._]|__|[-]*)[a-z0-9]+)+)?)+)?(?:[:@][a-zA-Z0-9][\w.-]+)?$`)
 
 	// Docker container/volume/network name validation

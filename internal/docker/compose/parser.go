@@ -184,6 +184,14 @@ func SanitizeProjectName(name string) string {
 // convertProjectToInternalModel converts a compose-go project to our internal model
 // It handles the conversion of services, networks, volumes, secrets, and configs
 // to their respective internal representations.
+// It also sets the project name and version if available.
+// Note: The project.Version is not directly available in the Project struct,
+// but we can set it in the internal model if needed.
+// This function is responsible for converting the entire project structure
+// and returning the fully populated internal model.
+// It returns an error if any conversion fails.
+// Note: The project.Version is not directly available in the Project struct,
+// but we can set it in the internal model if needed.
 	if project == nil {
 		return nil, errors.New("cannot convert nil project")
 	}
