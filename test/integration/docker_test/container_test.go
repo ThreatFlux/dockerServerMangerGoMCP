@@ -23,7 +23,7 @@ import (
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/config"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/database"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/database/repositories"
-	docker_internal "github.com/threatflux/dockerServerMangerGoMCP/internal/docker" // Alias docker_test package
+	dockerinternal "github.com/threatflux/dockerServerMangerGoMCP/internal/docker" // Alias docker_test package
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/docker/container/lifecycle"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
 )
@@ -32,8 +32,8 @@ import (
 type testServer struct {
 	Server   *api.Server
 	Config   *config.Config
-	DB       database.Database       // Use Database interface
-	Docker   docker_internal.Manager // Use Manager interface and alias
+	DB       database.Database      // Use Database interface
+	Docker   dockerinternal.Manager // Use Manager interface and alias
 	Auth     auth.Service
 	Logger   *logrus.Logger
 	UserRepo repositories.UserRepository // Use the interface type
@@ -100,31 +100,31 @@ func setupTestServer(t *testing.T) (*testServer, *httptest.Server, error) {
 	// Docker host is handled by NewManager options below
 
 	// Create real Docker client manager using functional options
-	opts := []docker_internal.ClientOption{
-		docker_internal.WithLogger(logger),
+	opts := []dockerinternal.ClientOption{
+		dockerinternal.WithLogger(logger),
 	}
 	if cfg.Docker.Host != "" {
-		opts = append(opts, docker_internal.WithHost(cfg.Docker.Host))
+		opts = append(opts, dockerinternal.WithHost(cfg.Docker.Host))
 	} else {
 		// Attempt to use DOCKER_HOST env var if config is empty
 		dockerHostEnv := os.Getenv("DOCKER_HOST")
 		if dockerHostEnv != "" {
 			logger.Infof("Using DOCKER_HOST environment variable: %s", dockerHostEnv)
-			opts = append(opts, docker_internal.WithHost(dockerHostEnv))
+			opts = append(opts, dockerinternal.WithHost(dockerHostEnv))
 		}
 	}
 	if cfg.Docker.APIVersion != "" {
-		opts = append(opts, docker_internal.WithAPIVersion(cfg.Docker.APIVersion))
+		opts = append(opts, dockerinternal.WithAPIVersion(cfg.Docker.APIVersion))
 	}
 	if cfg.Docker.TLSVerify {
-		opts = append(opts, docker_internal.WithTLSVerify(true))
+		opts = append(opts, dockerinternal.WithTLSVerify(true))
 		if cfg.Docker.TLSCertPath != "" && cfg.Docker.TLSKeyPath != "" && cfg.Docker.TLSCAPath != "" {
-			opts = append(opts, docker_internal.WithTLSConfig(cfg.Docker.TLSCertPath, cfg.Docker.TLSKeyPath, cfg.Docker.TLSCAPath))
+			opts = append(opts, dockerinternal.WithTLSConfig(cfg.Docker.TLSCertPath, cfg.Docker.TLSKeyPath, cfg.Docker.TLSCAPath))
 		} else {
 			certPathEnv := os.Getenv("DOCKER_CERT_PATH")
 			if certPathEnv != "" {
 				logger.Infof("Using DOCKER_CERT_PATH environment variable: %s", certPathEnv)
-				opts = append(opts, docker_internal.WithTLSConfig(
+				opts = append(opts, dockerinternal.WithTLSConfig(
 					fmt.Sprintf("%s/cert.pem", certPathEnv),
 					fmt.Sprintf("%s/key.pem", certPathEnv),
 					fmt.Sprintf("%s/ca.pem", certPathEnv),
@@ -135,7 +135,7 @@ func setupTestServer(t *testing.T) (*testServer, *httptest.Server, error) {
 		}
 	}
 
-	dockerManager, err := docker_internal.NewManager(opts...)
+	dockerManager, err := dockerinternal.NewManager(opts...)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create docker manager: %w", err)
 	}

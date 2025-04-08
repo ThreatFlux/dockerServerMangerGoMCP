@@ -8,7 +8,7 @@ import (
 	networktypes "github.com/docker/docker/api/types/network" // Import network types
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	network_internal "github.com/threatflux/dockerServerMangerGoMCP/internal/docker/network" // Keep aliased network import
+	networkinternal "github.com/threatflux/dockerServerMangerGoMCP/internal/docker/network" // Keep aliased network import
 )
 
 // TestNetworkOperations tests network-related endpoints
@@ -138,7 +138,7 @@ func TestNetworkOperations(t *testing.T) {
 	// Test creating a network
 	t.Run("CreateNetwork", func(t *testing.T) {
 		// Create network request
-		createReq := network_internal.CreateOptions{ // Use type from network_internal
+		createReq := networkinternal.CreateOptions{ // Use type from network_internal
 			Driver:   "bridge",
 			Internal: false,
 			IPAM: &networktypes.IPAM{ // Use networktypes.IPAM
@@ -227,7 +227,7 @@ func TestNetworkOperations(t *testing.T) {
 		// })
 
 		// Create connect request
-		connectReq := network_internal.ConnectOptions{ // Use type from network_internal
+		connectReq := networkinternal.ConnectOptions{ // Use type from network_internal
 			// Container field removed (passed as arg)
 			EndpointConfig: &networktypes.EndpointSettings{ // Use networktypes.EndpointSettings
 				IPAddress: "172.18.0.10",
@@ -249,7 +249,7 @@ func TestNetworkOperations(t *testing.T) {
 	// Test disconnecting a container from a network
 	t.Run("DisconnectContainerFromNetwork", func(t *testing.T) {
 		// Create disconnect request
-		disconnectReq := network_internal.DisconnectOptions{ // Use type from network_internal
+		disconnectReq := networkinternal.DisconnectOptions{ // Use type from network_internal
 			// Container field removed (passed as arg)
 			Force: false,
 		}
@@ -290,7 +290,7 @@ func TestNetworkSecurity(t *testing.T) {
 	// Test creating a network with invalid CIDR
 	t.Run("InvalidCIDR", func(t *testing.T) {
 		// Create network request with invalid CIDR
-		createReq := network_internal.CreateOptions{ // Use type from network_internal
+		createReq := networkinternal.CreateOptions{ // Use type from network_internal
 			Driver:   "bridge",
 			Internal: false,
 			IPAM: &networktypes.IPAM{ // Use networktypes.IPAM
@@ -325,7 +325,7 @@ func TestNetworkSecurity(t *testing.T) {
 	// Test creating a network with invalid driver
 	t.Run("InvalidDriver", func(t *testing.T) {
 		// Create network request with invalid driver
-		createReq := network_internal.CreateOptions{ // Use type from network_internal
+		createReq := networkinternal.CreateOptions{ // Use type from network_internal
 			Driver:   "nonexistent-driver",
 			Internal: false,
 			IPAM: &networktypes.IPAM{ // Use networktypes.IPAM

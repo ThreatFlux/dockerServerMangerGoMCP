@@ -7,7 +7,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/stretchr/testify/mock"
-	docker_internal "github.com/threatflux/dockerServerMangerGoMCP/internal/docker"
+	dockerinternal "github.com/threatflux/dockerServerMangerGoMCP/internal/docker"
 )
 
 // MockDockerManager implements the docker.Manager interface for integration tests
@@ -82,13 +82,13 @@ func (m *MockDockerManager) IsClosed() bool {
 	}
 	return args.Bool(0)
 }
-func (m *MockDockerManager) GetConfig() docker_internal.ClientConfig {
+func (m *MockDockerManager) GetConfig() dockerinternal.ClientConfig {
 	args := m.Called()
 	// Default mock behavior if not set
 	if len(args) == 0 {
-		return docker_internal.ClientConfig{}
+		return dockerinternal.ClientConfig{}
 	}
-	return args.Get(0).(docker_internal.ClientConfig)
+	return args.Get(0).(dockerinternal.ClientConfig)
 }
 func (m *MockDockerManager) Close() error {
 	args := m.Called()

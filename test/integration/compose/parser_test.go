@@ -22,10 +22,8 @@ import (
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/config"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/database"
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/database/repositories"
-	docker_internal "github.com/threatflux/dockerServerMangerGoMCP/internal/docker" // Alias docker_test package
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/docker_test/compose" // Removed unused import
-	"github.com/threatflux/dockerServerMangerGoMCP/internal/models" // Added import
-	// "github.com/threatflux/dockerServerMangerGoMCP/internal/utils" // Removed unused import
+	dockerinternal "github.com/threatflux/dockerServerMangerGoMCP/internal/docker" // Alias docker_test package
+	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"                // Added import
 )
 
 // setupTestServer creates a test server for compose testing
@@ -115,9 +113,9 @@ func setupTestServer(t *testing.T) (*testServer, error) {
 	// No error returned by NewService now
 
 	// Create real Docker Manager using functional options
-	dockerManager, err := docker_internal.NewManager(
-		docker_internal.WithHost(dockerHost), // Use the determined dockerHost
-		docker_internal.WithLogger(logger),
+	dockerManager, err := dockerinternal.NewManager(
+		dockerinternal.WithHost(dockerHost), // Use the determined dockerHost
+		dockerinternal.WithLogger(logger),
 		// Add other necessary options from cfg if needed, e.g., TLS
 		// docker_internal.WithTLSVerify(cfg.Docker.TLSVerify),
 		// docker_internal.WithTLSConfig(cfg.Docker.TLSCertPath, cfg.Docker.TLSKeyPath, cfg.Docker.TLSCAPath),
@@ -167,8 +165,8 @@ func setupTestServer(t *testing.T) (*testServer, error) {
 type testServer struct {
 	Server     *api.Server
 	Config     *config.Config
-	DB         database.Database       // Use Database interface
-	Docker     docker_internal.Manager // Use Manager interface and alias
+	DB         database.Database      // Use Database interface
+	Docker     dockerinternal.Manager // Use Manager interface and alias
 	Auth       auth.Service
 	Logger     *logrus.Logger
 	UserRepo   repositories.UserRepository // Use interface type

@@ -1,27 +1,14 @@
 package compose
 
 import (
-	// "bytes" // Removed unused import
 	"encoding/json"
 	"fmt"
-	// "io" // Removed unused import
-	// "mime/multipart" // Removed unused import
 	"net/http"
-	// "strings" // Removed unused import
 	"testing"
 	"time"
 
-	// Remove unused Docker SDK types
-	// "github.com/docker/docker/api/types"
-	// "github.com/docker/docker/api/types/container"
-	// "github.com/docker/docker/api/types/filters"
-	// "github.com/docker/docker/api/types/network"
-	// "github.com/docker/docker/api/types/volume"
-	// "github.com/docker/docker/client"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	// docker_internal "github.com/threatflux/dockerServerMangerGoMCP/internal/docker" // Removed unused import
 	"github.com/threatflux/dockerServerMangerGoMCP/internal/models"
 )
 
